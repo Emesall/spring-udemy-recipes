@@ -1,5 +1,6 @@
 package com.emesall.recipes.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -39,11 +40,21 @@ public class Recipe {
 	private Notes notes;
 	
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "recipe")
-	private Set<Ingredient> ingredients;
+	private Set<Ingredient> ingredients=new HashSet<Ingredient>();
 	
 	@ManyToMany
 	@JoinTable(name = "recipe_category",joinColumns = @JoinColumn(name = "recipe_id"),inverseJoinColumns = @JoinColumn(name = "category_id"))
-	private Set<Category> categories;
+	private Set<Category> categories=new HashSet<Category>();
+
+	
+	public Recipe() {
+		
+	}
+
+	public Recipe(String description) {
+		super();
+		this.description = description;
+	}
 
 	public Long getId() {
 		return id;
@@ -124,14 +135,43 @@ public class Recipe {
 	public void setNotes(Notes notes) {
 		this.notes = notes;
 	}
+	
+	public void setIngredients(Set<Ingredient> ingredients) {
+		this.ingredients = ingredients;
+	}
+
+	public void setDifficulty(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+
+	public Set<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(Set<Category> categories) {
+		this.categories = categories;
+	}
+	
+	public void addIngredient(Ingredient ingredient) {
+		this.ingredients.add(ingredient);
+		ingredient.setRecipe(this);
+	}
+	
+	public void addCategory(Category category) {
+		category.getRecipes().add(this);
+		this.categories.add(category);
+		
+	}
+
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
 
 	public Set<Ingredient> getIngredients() {
 		return ingredients;
 	}
-
-	public void setIngredients(Set<Ingredient> ingredients) {
-		this.ingredients = ingredients;
-	}
+	
+	
 	
 
 }

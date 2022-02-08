@@ -1,8 +1,10 @@
 package com.emesall.recipes.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,9 +17,17 @@ public class Category {
 	private Long Id;
 	private String name;
 	
-	@ManyToMany(mappedBy = "categories")
-	private Set<Recipe> recipes;
+	@ManyToMany(fetch = FetchType.EAGER,mappedBy = "categories")
+	private Set<Recipe> recipes=new HashSet<Recipe>();
 	
+	
+	public Category() {
+		
+	}
+	public Category(String name) {
+		super();
+		this.name = name;
+	}
 	public Long getId() {
 		return Id;
 	}
