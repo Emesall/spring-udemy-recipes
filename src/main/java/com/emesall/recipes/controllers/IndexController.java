@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.emesall.recipes.repositories.CategoryRepository;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 public class IndexController {
 
@@ -22,7 +24,7 @@ public class IndexController {
 
 	@RequestMapping({"","/","/index"})
 	public String getIndexPage() {
-		
+		log.debug("Loading index page");
 		categoryRepository.findByName("kategoria2").ifPresent(category ->System.out.println(category.getId()));
 		
 

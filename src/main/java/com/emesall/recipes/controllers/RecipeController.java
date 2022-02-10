@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.emesall.recipes.services.RecipeListService;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 public class RecipeController {
 
@@ -20,7 +22,7 @@ public class RecipeController {
 
 	@RequestMapping("/recipes")
 	public String getRecipeList(Model model) {
-		
+		log.debug("Loading recipes page");
 		model.addAttribute("recipes", recipeListService.getRecipes());
 		
 		return "recipes/list";
