@@ -1,10 +1,8 @@
 package com.emesall.recipes.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -23,20 +21,20 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 
 import com.emesall.recipes.model.Recipe;
-import com.emesall.recipes.services.RecipeListService;
+import com.emesall.recipes.services.RecipeServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeControllerTest {
 
 	RecipeController recipeController;
 	@Mock
-	RecipeListService recipeListService;
+	RecipeServiceImpl recipeService;
 	@Mock
 	Model model;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		recipeController = new RecipeController(recipeListService);
+		recipeController = new RecipeController(recipeService);
 
 	}
 
@@ -51,16 +49,30 @@ class RecipeControllerTest {
 
 		Set<Recipe> recipes = new HashSet<Recipe>();
 		recipes.add(new Recipe());
-		when(recipeListService.getRecipes()).thenReturn(recipes);
+		when(recipeService.getRecipes()).thenReturn(recipes);
 
 		ArgumentCaptor<Set<Recipe>> captor = ArgumentCaptor.forClass(Set.class);
 
 		assertEquals("recipes/list", recipeController.getRecipeList(model));
-		verify(recipeListService, times(1)).getRecipes();
+		verify(recipeService, times(1)).getRecipes();
 		verify(model, times(1)).addAttribute(eq("recipes"), captor.capture());
 
 		Set<Recipe> actual = captor.getValue();
 		assertEquals(recipes.size(), actual.size());
+	}
+	
+	@Test
+	void testShowById() throws Exception {
+		
+		Recipe recipe=new Recipe();
+		recipe.setId(1L);
+		when(recipeService.findById(anyLong())).thenReturn(recipe);
+		
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(recipeController).build();
+		mockMvc.perform(get("/recipes/show/1")).andExpect(status().isOk()).andExpect(view().name("recipes/show"));
+		
+		
+		
 	}
 
 }

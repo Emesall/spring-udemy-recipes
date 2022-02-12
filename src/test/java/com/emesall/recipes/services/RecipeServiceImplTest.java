@@ -1,11 +1,11 @@
 package com.emesall.recipes.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +16,10 @@ import org.mockito.MockitoAnnotations;
 import com.emesall.recipes.model.Recipe;
 import com.emesall.recipes.repositories.RecipeRepository;
 
-class RecipeListServiceTest {
+class RecipeServiceImplTest {
 
 	 
-	ListService<Recipe> listService;
+	RecipeService recipeService;
 
 	@Mock
 	RecipeRepository recipeRepository;
@@ -27,7 +27,7 @@ class RecipeListServiceTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		MockitoAnnotations.openMocks(this);
-		listService=new RecipeListService(recipeRepository);
+		recipeService=new RecipeServiceImpl(recipeRepository);
 	}
 
 	@Test
@@ -36,11 +36,27 @@ class RecipeListServiceTest {
 		recipesFake.add(new Recipe());
 		when(recipeRepository.findAll()).thenReturn(recipesFake);
 		
-		Set<Recipe> recipes=listService.getRecipes();
+		Set<Recipe> recipes=recipeService.getRecipes();
 		
 		assertEquals(1, recipes.size());
 		verify(recipeRepository,times(1)).findAll();
 		
 	}
+	@Test
+	void testFindById() {
+		Recipe recipe=new Recipe();
+		Long id=1L;
+		recipe.setId(id);
+		when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe));
+		
+		Recipe rec=recipeService.findById(id);
+		assertNotNull(rec);
+		assertEquals(1L,rec.getId());
+		verify(recipeRepository,times(1)).findById(anyLong());
+		verify(recipeRepository,never()).findAll();
+		
+	}
+	
+	
 
 }

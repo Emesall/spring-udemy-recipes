@@ -10,12 +10,12 @@ import com.emesall.recipes.model.Recipe;
 import com.emesall.recipes.repositories.RecipeRepository;
 
 @Service
-public class RecipeListService implements ListService<Recipe> {
+public class RecipeServiceImpl implements RecipeService {
 
 	private final RecipeRepository recipeRepository;
 
 	@Autowired
-	public RecipeListService(RecipeRepository recipeRepository) {
+	public RecipeServiceImpl(RecipeRepository recipeRepository) {
 		super();
 		this.recipeRepository = recipeRepository;
 	}
@@ -29,4 +29,11 @@ public class RecipeListService implements ListService<Recipe> {
 		return recipes;
 	}
 
+	@Override
+	public Recipe findById(Long id) {
+		
+		return recipeRepository.findById(id).orElseThrow(() ->new RuntimeException("No recipe found"));
+	}
+
+	
 }
