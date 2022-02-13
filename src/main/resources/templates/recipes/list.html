@@ -52,14 +52,14 @@
 									<td>TestDescription</td>
 									<td>TestView</td>
 									<td>Update</td>
-									<td>delete</td>
+									<td>Delete</td>
 								</tr>
 								<tr th:each="recipe : ${recipes}">
 									<td th:text="${recipe.id}">123</td>
 									<td th:text="${recipe.description}">s</td>
 									<td><a href="#" th:href="@{'/recipes/'+${recipe.id}+'/show'}">View</a></td>
 									<td><a href="#" th:href="@{'/recipes/'+${recipe.id}+'/update'}">Update</a></td>
-									<td><a href="#" th:href="@{'/recipes/'+${recipe.id}+'/update'}">Update</a></td>
+									<td><a href="#" th:href="@{'/recipes/'+${recipe.id}+'/delete'}">Delete</a></td>
 								</tr>
 
 							</table>
