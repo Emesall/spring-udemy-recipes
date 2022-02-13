@@ -41,8 +41,9 @@
 									<h7>Categories:</h7>
 								</div>
 								<div class="col-md-9">
-									<ul th:each="category : ${recipe.categories}">
-										<li th:text="${category.name}">Cat one</li>
+									<ul>
+										<li th:each="category : ${recipe.categories}"
+											th:text="${category.name}">Cat one</li>
 									</ul>
 								</div>
 							</div>
@@ -98,8 +99,8 @@
 						<div class="card-body">
 							<div class="row justify-content-center">
 								<div class="col-md-12">
-									<ul th:each="ingredient : ${recipe.ingredients}">
-										<li
+									<ul>
+										<li th:each="ingredient : ${recipe.ingredients}"
 											th:text="${ingredient.uom!=null} ? ${(ingredient.amount+' '+ingredient.description+' '+ingredient.uom.description)}: ${(ingredient.amount+' '+ingredient.description)}">1
 											Cup of milk</li>
 									</ul>
