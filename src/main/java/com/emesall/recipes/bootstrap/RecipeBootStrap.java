@@ -94,7 +94,14 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		log.debug("Starting boot app");
 		recipeRepository.saveAll(getRecipes());
-
+		Recipe recipe1 = new Recipe("Guac");
+		recipe1.setId(1L);
+		//recipeRepository.save(recipe1);
+		//recipeRepository.deleteById(1L);
+		
+		
+		
+		
 	}
 
 }
