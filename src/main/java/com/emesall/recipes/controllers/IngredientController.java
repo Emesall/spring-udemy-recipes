@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.emesall.recipes.commands.IngredientCommand;
+import com.emesall.recipes.commands.RecipeCommand;
+import com.emesall.recipes.commands.UnitOfMeasureCommand;
 import com.emesall.recipes.services.IngredientService;
 import com.emesall.recipes.services.RecipeService;
 import com.emesall.recipes.services.UnitOfMeasureService;
@@ -55,6 +57,26 @@ public class IngredientController {
 		model.addAttribute("uomList",unitOfMeasureService.listUoM());
 		return "recipes/ingredients/ingredientForm";
 	}
+	
+	@RequestMapping("/recipes/{recipeId}/ingredients/new")
+	public String getNewIngredient(@PathVariable Long recipeId, Model model) {
+		log.debug("Adding new ingredient to recipe: " + recipeId);
+
+		//make sure we have a good id value
+        RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(recipeId));
+        
+        //need to return back parent id for hidden form property
+        IngredientCommand ingredientCommand = new IngredientCommand();
+        ingredientCommand.setRecipeId(recipeId);
+        model.addAttribute("ingredient", ingredientCommand);
+
+        //init uom
+        ingredientCommand.setUom(new UnitOfMeasureCommand());
+		model.addAttribute("uomList",unitOfMeasureService.listUoM());
+		return "recipes/ingredients/ingredientForm";
+	}
+	
+	
 	@PostMapping("/recipes/{recipeId}/ingredients")
 	public String saveIngredient(@ModelAttribute IngredientCommand ingredientCommand ) {
 		log.debug("Saving/updating ingredient ..");
@@ -64,4 +86,15 @@ public class IngredientController {
 		return "redirect:/recipes/"+savedCommand.getRecipeId()+"/ingredients";
 		
 	}
+	
+	@RequestMapping("/recipes/{recipeId}/ingredients/{ingredientId}/delete")
+	public String deleteIngredient(@PathVariable Long recipeId, @PathVariable Long ingredientId, Model model) {
+		log.debug("Ingredient deleting: " + ingredientId);
+
+		ingredientService.deleteIngredientById(ingredientId);
+		
+		return "redirect:/recipes/"+recipeId+"/ingredients/";
+	}
+	
+	
 }

@@ -50,4 +50,10 @@ public class IngredientServiceImpl implements IngredientService {
 		return ingredientToIngredientCommand.convert(savedIngredient);
 	}
 
+	@Override
+	public void deleteIngredientById(Long id) {
+		ingredientRepository.deleteById(id);
+		
+	}
+
 }

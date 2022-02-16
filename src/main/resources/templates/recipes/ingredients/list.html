@@ -29,7 +29,15 @@
 					<div class="card card-primary border border-primary"
 						style="margin: 20px 0">
 						<div class="card-header bg-primary text-light">
-							<h3 class="card-title">Ingredients</h3>
+							<div class="row">
+								<div class="col-md-10">
+									<h3 class="card-title">Ingredients</h3>
+								</div>
+								<div class="col-md-2">
+									<a class="btn btn-light" href="#" role="button"
+										th:href="@{'/recipes/' + ${recipe.id} + '/ingredients/new'}">New</a>
+								</div>
+							</div>
 						</div>
 						<div class="card-body">
 

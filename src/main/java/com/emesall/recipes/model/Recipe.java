@@ -57,8 +57,8 @@ public class Recipe {
 	}
 
 	public void addIngredient(Ingredient ingredient) {
-		this.ingredients.add(ingredient);
 		ingredient.setRecipe(this);
+		this.ingredients.add(ingredient);
 	}
 
 	public void addCategory(Category category) {
