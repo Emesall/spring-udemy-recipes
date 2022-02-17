@@ -23,10 +23,11 @@
 	th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
 </head>
 <body>
-	<div class="container-fluid" style="margin-top: 20px" >
+	<div class="container-fluid" style="margin-top: 20px">
 		<div class="justify-content-center">
 			<div class="col-md-6 offset-md-3">
-				<form th:object="${recipe}" th:action="@{/recipes/}" th:method="post">
+				<form th:object="${recipe}" th:action="@{/recipes/}"
+					th:method="post">
 					<input type="hidden" th:field="*{id}" />
 					<div class="panel-group">
 						<div class="card mb-3">
@@ -65,7 +66,13 @@
 											class="form-control" th:field="*{cookTime}" />
 									</div>
 									<div class="col-md-3 form-group">
-										<label><b>Difficulty:</b></label> <select class="form-control">
+										<label><b>Difficulty:</b></label> <select class="form-control"
+											th:field="*{difficulty}">
+											<option
+												th:each="diff: ${T(com.emesall.recipes.model.Difficulty).values()}"
+												th:value="${diff.name()}" th:text="${diff.getDisplayName()}">Easy</option>
+
+										</select> <select class="form-control" th:remove="all">
 											<option>Easy</option>
 											<option>Medium</option>
 											<option>Hard</option>
@@ -95,7 +102,8 @@
 										<h5 class="card-title">Ingredients</h5>
 									</div>
 									<div class="col-md-2">
-										<a class="btn btn-light" href="#" role="button" th:href="@{'/recipes/' + ${recipe.id} + '/ingredients/'}">Edit</a>
+										<a class="btn btn-light" href="#" role="button"
+											th:href="@{'/recipes/' + ${recipe.id} + '/ingredients/'}">Edit</a>
 									</div>
 								</div>
 							</div>
