@@ -27,27 +27,46 @@
 <body>
 	<div class="container-fluid" style="margin-top: 20px">
 		<div class="row justify-content-center">
-			<div class="col-md-6 col-md-offset-3">
+			<div class="col-md-7 ">
 				<div class="panel-group">
 					<div class="card card-primary border border-primary"
 						style="margin: 20px 0">
+
 						<div class="card-header bg-primary text-light">
-							<h7 class="card-title" th:text="${recipe.description}">
-							Recipe Description Here! </h7>
+							<div class="row">
+								<div class="col-md-9">
+									<h7 class="card-title" th:text="${recipe.description}">
+									Recipe Description Here! </h7>
+								</div>
+								<div class="col-md-3 ">
+									<a class="btn btn-info" href="#"
+										th:href="@{'/recipes/' + ${recipe.Id} + '/image'}" role="button">Change
+										Image</a>
+								</div>
+							</div>
+
 						</div>
 						<div class="card-body">
-							<div class="row justify-content-center">
+
+
+							<div class="row">
 								<div class="col-md-3">
 									<h7>Categories:</h7>
 								</div>
-								<div class="col-md-9">
+								<div class="col-md-3">
 									<ul>
 										<li th:each="category : ${recipe.categories}"
 											th:text="${category.name}">Cat one</li>
 									</ul>
 								</div>
+								<div class="col-md-6" style="margin: 20px 0">
+									<img src="../../static/images/maxresdefault.jpg"
+										th:src="@{/images/guacamolemaxresdefault.jpg}" width="200"
+										height="200">
+								</div>
+
 							</div>
-							<div class="rowjustify-content-center">
+							<div class="row">
 								<div class="col-md-3">
 									<h7>Prep Time:</h7>
 								</div>
@@ -61,7 +80,7 @@
 									<p th:text="${recipe.difficulty}">Easy</p>
 								</div>
 							</div>
-							<div class="row justify-content-center">
+							<div class="row ">
 								<div class="col-md-3">
 									<h7>Cooktime:</h7>
 								</div>
@@ -75,7 +94,7 @@
 									<p th:text="${recipe.servings}">4</p>
 								</div>
 							</div>
-							<div class="row justify-content-center">
+							<div class="row ">
 								<div class="col-md-3">
 									<h7> Source:</h7>
 								</div>

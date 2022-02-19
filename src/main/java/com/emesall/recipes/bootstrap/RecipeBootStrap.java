@@ -77,6 +77,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 		recipe2.setServings(4);
 
 		recipe1.addCategory(categoryRepository.findByName("Mexican").get());
+		recipe1.addCategory(categoryRepository.findByName("American").get());
 		recipe2.addCategory(categoryRepository.findByName("American").get());
 		recipes.add(recipe1);
 		recipes.add(recipe2);
