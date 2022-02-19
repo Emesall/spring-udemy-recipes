@@ -39,7 +39,7 @@ public class Recipe {
 	@Enumerated(EnumType.STRING)
 	private Difficulty difficulty;
 	@Lob
-	private Byte[] image;
+	private byte[] image;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "recipe")
 	private Notes notes;
