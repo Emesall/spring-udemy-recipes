@@ -60,8 +60,9 @@
 									</ul>
 								</div>
 								<div class="col-md-6" style="margin: 20px 0">
+					
 									<img src="../../static/images/maxresdefault.jpg"
-										th:src="@{/images/guacamolemaxresdefault.jpg}" width="200"
+										th:src="@{'/recipes/'+${recipe.Id}+'/fetchImage'}" width="200"
 										height="200">
 								</div>
 
