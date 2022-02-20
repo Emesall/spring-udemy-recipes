@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 
 import com.emesall.recipes.commands.RecipeCommand;
+import com.emesall.recipes.exceptions.NotFoundException;
 import com.emesall.recipes.model.Recipe;
 import com.emesall.recipes.services.RecipeServiceImpl;
 
@@ -76,6 +77,15 @@ class RecipeControllerTest {
 		when(recipeService.findById(anyLong())).thenReturn(recipe);
 
 		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isOk()).andExpect(view().name("recipes/show"));
+
+	}
+	
+	@Test
+	void testShowByIdNotFound() throws Exception {
+
+		when(recipeService.findById(anyLong())).thenThrow(new NotFoundException("Recipe not found"));
+
+		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isNotFound());
 
 	}
 

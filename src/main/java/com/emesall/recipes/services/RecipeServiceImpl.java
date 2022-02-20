@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.emesall.recipes.commands.RecipeCommand;
 import com.emesall.recipes.converters.RecipeCommandToRecipe;
 import com.emesall.recipes.converters.RecipeToRecipeCommand;
+import com.emesall.recipes.exceptions.NotFoundException;
 import com.emesall.recipes.model.Recipe;
 import com.emesall.recipes.repositories.RecipeRepository;
 
@@ -44,7 +45,7 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	public Recipe findById(Long id) {
 
-		return recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("No recipe found"));
+		return recipeRepository.findById(id).orElseThrow(() -> new NotFoundException("No recipe found"));
 	}
 
 	@Override
