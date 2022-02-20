@@ -3,39 +3,37 @@ package com.emesall.recipes.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.emesall.recipes.exceptions.NotFoundException;
 
 @ControllerAdvice
+
 public class ExceptionHandlingController {
 
-	
-	@ExceptionHandler({NotFoundException.class,NumberFormatException.class})
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(NotFoundException.class)
 	public ModelAndView handleNotFound(Exception exception) {
-		String message="";
-		HttpStatus status=null;
-		
-		if(exception instanceof NotFoundException) {
-			message="404 NOT FOUND";
-			status=HttpStatus.NOT_FOUND;
-		}
-		if(exception instanceof NumberFormatException) {
-			message="400 BAD REQUEST";
-			status=HttpStatus.BAD_REQUEST;
-		}
-	
-		return genericExceptionMethod(exception, message, status);
+		String NOT_FOUND = "404 NOT FOUND";
+		return genericExceptionMethod(exception, NOT_FOUND);
 	}
 
-	
-	private ModelAndView genericExceptionMethod(Exception exception, String response,HttpStatus status) {
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NumberFormatException.class)
+	public ModelAndView handleBadRequest(Exception exception) {
+		String BAD_REQUEST = "400 BAD REQUEST";
+		return genericExceptionMethod(exception, BAD_REQUEST);
+	}
+
+	private ModelAndView genericExceptionMethod(Exception exception, String response) {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("response", response);
 		mav.addObject("message", exception.getMessage());
 		mav.setViewName("error");
-		mav.setStatus(status);
 		return mav;
 	}
+
+	
 
 }
