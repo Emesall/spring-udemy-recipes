@@ -44,7 +44,8 @@ class RecipeControllerTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		recipeController = new RecipeController(recipeService);
-		mockMvc = MockMvcBuilders.standaloneSetup(recipeController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(recipeController).setControllerAdvice(new ExceptionHandlingController()).build();
+		
 	}
 
 	@Test
@@ -85,7 +86,16 @@ class RecipeControllerTest {
 
 		when(recipeService.findById(anyLong())).thenThrow(new NotFoundException("Recipe not found"));
 
-		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isNotFound());
+		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isNotFound()).andExpect(view().name("error"));
+
+	}
+	
+	@Test
+	void testNumberFormatException() throws Exception {
+
+		
+		mockMvc.perform(get("/recipes/dsds/show")).andExpect(status().isBadRequest()).andExpect(view().name("error"));
+		
 
 	}
 

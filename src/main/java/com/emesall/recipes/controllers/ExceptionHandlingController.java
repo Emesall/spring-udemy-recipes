@@ -9,7 +9,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.emesall.recipes.exceptions.NotFoundException;
 
 @ControllerAdvice
-
 public class ExceptionHandlingController {
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
