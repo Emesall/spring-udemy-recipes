@@ -44,8 +44,9 @@ class RecipeControllerTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		recipeController = new RecipeController(recipeService);
-		mockMvc = MockMvcBuilders.standaloneSetup(recipeController).setControllerAdvice(new ExceptionHandlingController()).build();
-		
+		mockMvc = MockMvcBuilders.standaloneSetup(recipeController)
+				.setControllerAdvice(new ExceptionHandlingController()).build();
+
 	}
 
 	@Test
@@ -80,7 +81,7 @@ class RecipeControllerTest {
 		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isOk()).andExpect(view().name("recipes/show"));
 
 	}
-	
+
 	@Test
 	void testShowByIdNotFound() throws Exception {
 
@@ -89,13 +90,11 @@ class RecipeControllerTest {
 		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isNotFound()).andExpect(view().name("error"));
 
 	}
-	
+
 	@Test
 	void testNumberFormatException() throws Exception {
 
-		
 		mockMvc.perform(get("/recipes/dsds/show")).andExpect(status().isBadRequest()).andExpect(view().name("error"));
-		
 
 	}
 
@@ -107,15 +106,29 @@ class RecipeControllerTest {
 		;
 	}
 
+
 	@Test
-	void testSaveRecipe() throws Exception {
+	public void testPostNewRecipeForm() throws Exception {
 		RecipeCommand command = new RecipeCommand();
 		command.setId(2L);
 
 		when(recipeService.saveRecipeCommand(any())).thenReturn(command);
 
-		mockMvc.perform(post("/recipes").contentType(MediaType.APPLICATION_FORM_URLENCODED))
+		mockMvc.perform(post("/recipes").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("id", "")
+				.param("description", "some string").param("directions", "some directions"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/recipes/2/show"));
+	}
+
+	@Test
+	public void testPostNewRecipeFormValidationFail() throws Exception {
+		RecipeCommand command = new RecipeCommand();
+		command.setId(2L);
+
+
+		mockMvc.perform(post("/recipes").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("id", "").param("cookTime", "0")
+
+		).andExpect(status().isOk()).andExpect(model().attributeExists("recipe"))
+				.andExpect(view().name("recipes/recipeform"));
 	}
 
 	@Test

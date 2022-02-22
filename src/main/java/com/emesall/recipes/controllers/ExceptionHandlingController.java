@@ -10,6 +10,16 @@ import com.emesall.recipes.exceptions.NotFoundException;
 
 @ControllerAdvice
 public class ExceptionHandlingController {
+	//extends ResponseEntityExceptionHandler// 
+	//another way to handle errors with responseentity (http response)
+	/*
+	 * @ExceptionHandler(NotFoundException.class) protected ResponseEntity<Object>
+	 * handleConflict(RuntimeException ex, WebRequest request) { String
+	 * bodyOfResponse = "Not found exception";
+	 * 
+	 * return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(),
+	 * HttpStatus.CONFLICT, request); }
+	 */
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(NotFoundException.class)
@@ -28,11 +38,9 @@ public class ExceptionHandlingController {
 	private ModelAndView genericExceptionMethod(Exception exception, String response) {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("response", response);
-		mav.addObject("message", exception.getMessage());
+		mav.addObject("message", "Provided input is not a number");
 		mav.setViewName("error");
 		return mav;
 	}
-
-	
 
 }

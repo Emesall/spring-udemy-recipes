@@ -30,7 +30,7 @@ class RecipeImageControllerTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		imageController = new RecipeImageController(imageService);
-		mockMvc = MockMvcBuilders.standaloneSetup(imageController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(imageController).setControllerAdvice(new ExceptionHandlingController()).build();
 	}
 
 	@Test

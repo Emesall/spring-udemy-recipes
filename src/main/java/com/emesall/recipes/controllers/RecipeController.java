@@ -1,19 +1,17 @@
 package com.emesall.recipes.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.emesall.recipes.commands.RecipeCommand;
-import com.emesall.recipes.exceptions.NotFoundException;
 import com.emesall.recipes.services.RecipeServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +59,13 @@ public class RecipeController {
 	}
 
 	@PostMapping("recipes")
-	public String saveOrUpdate(@ModelAttribute RecipeCommand recipeCommand) {
+	public String saveOrUpdate(@Valid @ModelAttribute("recipe") RecipeCommand recipeCommand, BindingResult bindingResult) {
+		
+		if(bindingResult.hasErrors()) {
+			bindingResult.getAllErrors().forEach(result->log.debug(result.toString()));
+			
+			 return "recipes/recipeform";
+		}
 		log.debug("Saving new recipe into the database..");
 		RecipeCommand savedCommand = recipeService.saveRecipeCommand(recipeCommand);
 
