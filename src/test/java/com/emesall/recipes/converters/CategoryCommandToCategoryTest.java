@@ -10,7 +10,7 @@ import com.emesall.recipes.model.Category;
 
 class CategoryCommandToCategoryTest {
 
-	public static final Long ID_VALUE = 1L;
+	public static final String ID_VALUE = "1";
 	public static final String DESCRIPTION = "description";
 	CategoryCommandToCategory conventer;
 

@@ -34,7 +34,7 @@ public class RecipeImageController {
 	}
 
 	@GetMapping("recipes/{recipeId}/image")
-	public String showUploadForm(@PathVariable Long recipeId, Model model) {
+	public String showUploadForm(@PathVariable String recipeId, Model model) {
 		log.debug("Showing image upload page");
 		model.addAttribute("recipeId", recipeId);
 
@@ -42,7 +42,7 @@ public class RecipeImageController {
 	}
 
 	@PostMapping("recipes/{recipeId}/image")
-	public String handleImageUpload(@PathVariable Long recipeId, @RequestParam("imagefile") MultipartFile file) {
+	public String handleImageUpload(@PathVariable String recipeId, @RequestParam("imagefile") MultipartFile file) {
 		log.debug("Request from view to controller to save image..");
 		imageService.saveImageFile(recipeId, file);
 
@@ -50,7 +50,7 @@ public class RecipeImageController {
 	}
 
 	@GetMapping("recipes/{recipeId}/fetchImage")
-	public void fetchImage(@PathVariable Long recipeId, HttpServletResponse httpResponse) throws IOException {
+	public void fetchImage(@PathVariable String recipeId, HttpServletResponse httpResponse) throws IOException {
 		byte[] image = imageService.getImage(recipeId);
 		if (image != null) {
 			log.debug("Loading image from database");

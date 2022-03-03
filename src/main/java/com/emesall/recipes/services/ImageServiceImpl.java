@@ -24,7 +24,7 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public void saveImageFile(Long recipeId, MultipartFile file) {
+	public void saveImageFile(String recipeId, MultipartFile file) {
 
 		try {
 
@@ -42,7 +42,7 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public byte[] getImage(Long recipeId) {
+	public byte[] getImage(String recipeId) {
 		Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(()->new RuntimeException("No recipe found"));
 		
 		return recipe.getImage();

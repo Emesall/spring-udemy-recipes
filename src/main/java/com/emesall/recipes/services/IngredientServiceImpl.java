@@ -29,13 +29,13 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
-	public Ingredient findById(Long id) {
+	public Ingredient findById(String id) {
 
 		return ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("No ingredient found"));
 	}
 
 	@Override
-	public IngredientCommand findCommandById(Long id) {
+	public IngredientCommand findCommandById(String id) {
 		return ingredientToIngredientCommand.convert(findById(id));
 	}
 
@@ -51,7 +51,7 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
-	public void deleteIngredientById(Long id) {
+	public void deleteIngredientById(String id) {
 		ingredientRepository.deleteById(id);
 		
 	}

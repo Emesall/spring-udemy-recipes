@@ -14,9 +14,9 @@ class CategoryTest {
 
 	@Test
 	void testGetId() {
-		Long num=4L;
+		String num="4";
 		cat.setId(num);
-		assertEquals(num,4L);
+		assertEquals(num,"4");
 	
 	}
 

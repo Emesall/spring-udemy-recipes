@@ -19,7 +19,7 @@ import com.emesall.recipes.model.UnitOfMeasure;
 @ExtendWith(MockitoExtension.class)
 class IngredientCommandToIngredientTest {
 
-	public static final Long ID = 1L;
+	public static final String ID = "1";
 	public static final String DESCRIPTION = "desc";
 	public static final BigDecimal AMOUNT = new BigDecimal(2);
 	public static final Recipe RECIPE = new Recipe();
@@ -47,12 +47,12 @@ class IngredientCommandToIngredientTest {
 	void test() {
 		// given
 		IngredientCommand ingredientCommand = new IngredientCommand();
-		ingredientCommand.setId(1L);
+		ingredientCommand.setId(ID);
 		ingredientCommand.setAmount(new BigDecimal(2));
 		ingredientCommand.setDescription("desc");
 		UnitOfMeasure uom=new UnitOfMeasure();
 		uom.setDescription("de");
-		uom.setId(1L);
+		uom.setId(ID);
 		when(uomConventer.convert(any())).thenReturn(uom);
 		// when
 		Ingredient ingredient = conventer.convert(ingredientCommand);

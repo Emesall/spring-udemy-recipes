@@ -2,7 +2,7 @@ package com.emesall.recipes.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,14 +56,14 @@ class RecipeServiceImplTest {
 	@Test
 	void testFindById() {
 		Recipe recipe = new Recipe();
-		Long id = 1L;
+		String id = "1";
 		recipe.setId(id);
-		when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe));
+		when(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe));
 
 		Recipe rec = recipeService.findById(id);
 		assertNotNull(rec);
-		assertEquals(1L, rec.getId());
-		verify(recipeRepository, times(1)).findById(anyLong());
+		assertEquals("1", rec.getId());
+		verify(recipeRepository, times(1)).findById(anyString());
 		verify(recipeRepository, never()).findAll();
 
 	}
@@ -71,10 +71,10 @@ class RecipeServiceImplTest {
 	@Test()
 	void testFindByIdNotFound() throws Exception {
 		// given
-		Long id = 1L;
+		String id = "1";
 
 		// when
-		when(recipeRepository.findById(anyLong())).thenReturn(Optional.empty());
+		when(recipeRepository.findById(anyString())).thenReturn(Optional.empty());
 		// then
 
 		NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> recipeService.findById(id),
@@ -87,11 +87,11 @@ class RecipeServiceImplTest {
 	@Test
 	void testDeleteById() {
 
-		Long id = 1L;
+		String id = "1";
 
 		recipeService.deleteRecipeById(id);
 
-		verify(recipeRepository, times(1)).deleteById(anyLong());
+		verify(recipeRepository, times(1)).deleteById(anyString());
 
 	}
 

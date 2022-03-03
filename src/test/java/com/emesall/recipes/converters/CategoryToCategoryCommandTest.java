@@ -8,7 +8,7 @@ import com.emesall.recipes.model.Category;
 
 class CategoryToCategoryCommandTest {
 
-	public static final Long ID=1L;
+	public static final String ID="1";
 	public static final String DESCRIPTION="desc";
 	CategoryToCategoryCommand converter;
 	

@@ -47,7 +47,7 @@ class RecipeImageControllerTest {
                         "Emesall".getBytes());
 		mockMvc.perform(multipart("/recipes/1/image").file(multipartFile))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/recipes/{recipeId}/show"));
-		verify(imageService, times(1)).saveImageFile(anyLong(), any());
+		verify(imageService, times(1)).saveImageFile(anyString(), any());
 	}
 
 }

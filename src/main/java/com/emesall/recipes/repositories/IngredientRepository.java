@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.emesall.recipes.model.Ingredient;
 
-public interface IngredientRepository extends CrudRepository<Ingredient, Long> {
+public interface IngredientRepository extends CrudRepository<Ingredient, String> {
 
 }

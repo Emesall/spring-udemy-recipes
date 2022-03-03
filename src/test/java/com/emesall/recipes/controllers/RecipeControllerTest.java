@@ -75,8 +75,8 @@ class RecipeControllerTest {
 	@Test
 	void testShowById() throws Exception {
 		Recipe recipe = new Recipe();
-		recipe.setId(1L);
-		when(recipeService.findById(anyLong())).thenReturn(recipe);
+		recipe.setId("2");
+		when(recipeService.findById(anyString())).thenReturn(recipe);
 
 		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isOk()).andExpect(view().name("recipes/show"));
 
@@ -85,7 +85,7 @@ class RecipeControllerTest {
 	@Test
 	void testShowByIdNotFound() throws Exception {
 
-		when(recipeService.findById(anyLong())).thenThrow(new NotFoundException("Recipe not found"));
+		when(recipeService.findById(anyString())).thenThrow(new NotFoundException("Recipe not found"));
 
 		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isNotFound()).andExpect(view().name("error"));
 
@@ -110,7 +110,7 @@ class RecipeControllerTest {
 	@Test
 	public void testPostNewRecipeForm() throws Exception {
 		RecipeCommand command = new RecipeCommand();
-		command.setId(2L);
+		command.setId("2");
 
 		when(recipeService.saveRecipeCommand(any())).thenReturn(command);
 
@@ -122,7 +122,7 @@ class RecipeControllerTest {
 	@Test
 	public void testPostNewRecipeFormValidationFail() throws Exception {
 		RecipeCommand command = new RecipeCommand();
-		command.setId(2L);
+		command.setId("2");
 
 
 		mockMvc.perform(post("/recipes").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("id", "").param("cookTime", "0")
@@ -134,8 +134,8 @@ class RecipeControllerTest {
 	@Test
 	void testUpdate() throws Exception {
 		RecipeCommand recipe = new RecipeCommand();
-		recipe.setId(1L);
-		when(recipeService.findCommandById(anyLong())).thenReturn(recipe);
+		recipe.setId("1");
+		when(recipeService.findCommandById(anyString())).thenReturn(recipe);
 
 		mockMvc.perform(get("/recipes/1/update")).andExpect(status().isOk())
 				.andExpect(view().name("recipes/recipeForm")).andExpect(model().attributeExists("recipe"));
@@ -148,7 +148,7 @@ class RecipeControllerTest {
 		mockMvc.perform(get("/recipes/1/delete")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/recipes"));
 
-		verify(recipeService, times(1)).deleteRecipeById(anyLong());
+		verify(recipeService, times(1)).deleteRecipeById(anyString());
 	}
 
 }

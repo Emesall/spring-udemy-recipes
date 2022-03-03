@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.emesall.recipes.model.Recipe;
 @Repository
-public interface RecipeRepository extends CrudRepository<Recipe, Long> {
+public interface RecipeRepository extends CrudRepository<Recipe, String> {
 
 }

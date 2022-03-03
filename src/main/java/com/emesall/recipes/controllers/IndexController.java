@@ -25,9 +25,6 @@ public class IndexController {
 	@RequestMapping({"","/","/index"})
 	public String getIndexPage() {
 		log.debug("Loading index page");
-		categoryRepository.findByName("kategoria2").ifPresent(category ->System.out.println(category.getId()));
-		
-
 		
 		return "index";
 	}

@@ -3,6 +3,6 @@ package com.emesall.recipes.services;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageService {
-	void saveImageFile(Long recipeId, MultipartFile file);
-	byte[] getImage(Long recipeId);
+	void saveImageFile(String recipeId, MultipartFile file);
+	byte[] getImage(String recipeId);
 }
