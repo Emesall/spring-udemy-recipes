@@ -1,4 +1,5 @@
 spring:
+  sql:    init:      platform: mysql
   datasource:
     url: jdbc:mysql://localhost:3306/rec_dev
     username: rec_dev_user
