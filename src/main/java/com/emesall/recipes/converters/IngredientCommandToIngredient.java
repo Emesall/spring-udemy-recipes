@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.emesall.recipes.commands.IngredientCommand;
 import com.emesall.recipes.model.Ingredient;
-import com.emesall.recipes.model.Recipe;
 
 import lombok.Synchronized;
 
@@ -33,11 +32,11 @@ public class IngredientCommandToIngredient implements Converter<IngredientComman
 		}
 		
 		final Ingredient ingredient=new Ingredient();
-		if(source.getRecipeId() != null){
+		/*if(source.getRecipeId() != null){
             Recipe recipe = new Recipe();
             recipe.setId(source.getRecipeId());
             recipe.addIngredient(ingredient);
-        }
+        }*/
 		ingredient.setAmount(source.getAmount());
 		ingredient.setDescription(source.getDescription());
 		ingredient.setId(source.getId());

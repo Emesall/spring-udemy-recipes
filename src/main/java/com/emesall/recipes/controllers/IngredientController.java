@@ -50,10 +50,10 @@ public class IngredientController {
 	}
 
 	@RequestMapping("/recipes/{recipeId}/ingredients/{ingredientId}/update")
-	public String getUpdateIngredient(@PathVariable String ingredientId, Model model) {
+	public String getUpdateIngredient(@PathVariable String recipeId,@PathVariable String ingredientId, Model model) {
 		log.debug("Ingredient update page with ID: " + ingredientId);
 
-		model.addAttribute("ingredient", ingredientService.findCommandById(ingredientId));
+		model.addAttribute("ingredient", ingredientService.findCommandById(ingredientId,recipeId));
 		model.addAttribute("uomList",unitOfMeasureService.listUoM());
 		return "recipes/ingredients/ingredientForm";
 	}

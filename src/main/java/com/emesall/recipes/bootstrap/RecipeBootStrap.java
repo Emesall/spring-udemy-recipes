@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.emesall.recipes.model.Category;
 import com.emesall.recipes.model.Difficulty;
 import com.emesall.recipes.model.Ingredient;
 import com.emesall.recipes.model.Recipe;
@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@Profile("default")
 public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEvent> {
 
 	private final CategoryRepository categoryRepository;
@@ -92,13 +91,44 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 				.orElseThrow(() -> new RuntimeException("Unit of measure '" + description + "' not found"));
 	}
 
+	private void loadCategories() {
+		Category cat1 = new Category();
+		cat1.setName("American");
+		categoryRepository.save(cat1);
+
+		Category cat2 = new Category();
+		cat2.setName("Italian");
+		categoryRepository.save(cat2);
+
+		Category cat3 = new Category();
+		cat3.setName("Mexican");
+		categoryRepository.save(cat3);
+
+	}
+
+	private void loadUom() {
+		UnitOfMeasure uom1 = new UnitOfMeasure();
+		uom1.setDescription("teaspoon");
+		unitOfMeasureRepository.save(uom1);
+
+		UnitOfMeasure uom2 = new UnitOfMeasure();
+		uom2.setDescription("tablespoon");
+		unitOfMeasureRepository.save(uom2);
+
+		UnitOfMeasure uom4 = new UnitOfMeasure();
+		uom4.setDescription("pinch");
+		unitOfMeasureRepository.save(uom4);
+
+		
+	}
 	@Transactional
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		log.debug("Starting boot app");
+		loadCategories();
+		loadUom();
 		recipeRepository.saveAll(getRecipes());
-		//recipeRepository.save(recipe1);
-		//recipeRepository.deleteById(1L);
+		
 		
 		
 		

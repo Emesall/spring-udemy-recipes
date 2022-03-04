@@ -1,9 +1,12 @@
 package com.emesall.recipes.commands;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.URL;
 
@@ -19,32 +22,32 @@ import lombok.Setter;
 public class RecipeCommand {
 
 	private String id;
-	
+
 	@NotBlank
 	@Size(min = 3, max = 255)
 	private String description;
-	
+
 	@Min(1)
 	private Integer prepTime;
-	
+
 	@Min(1)
 	private Integer cookTime;
-	
+
 	@Min(1)
-    @Max(100)
+	@Max(100)
 	private Integer servings;
 	private String source;
-	
+
 	@URL
 	private String url;
-	
+
 	@NotBlank
 	private String directions;
-	
+
 	private byte[] image;
-	
+
 	private Difficulty difficulty;
 	private NotesCommand notes;
-	private Set<IngredientCommand> ingredients = new HashSet<IngredientCommand>();
-	private Set<CategoryCommand> categories = new HashSet<CategoryCommand>();
+	private List<IngredientCommand> ingredients = new ArrayList<IngredientCommand>();
+	private List<CategoryCommand> categories = new ArrayList<CategoryCommand>();
 }

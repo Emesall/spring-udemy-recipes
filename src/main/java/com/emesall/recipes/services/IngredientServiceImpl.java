@@ -35,8 +35,10 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
-	public IngredientCommand findCommandById(String id) {
-		return ingredientToIngredientCommand.convert(findById(id));
+	public IngredientCommand findCommandById(String id,String recipeId) {
+		IngredientCommand command=ingredientToIngredientCommand.convert(findById(id));
+		command.setRecipeId(recipeId);
+		return command;
 	}
 
 	@Override
@@ -46,8 +48,9 @@ public class IngredientServiceImpl implements IngredientService {
 		Ingredient savedIngredient=ingredientRepository.save(detachedIngredient);
 		
 		log.debug("Saved IngredientId:" + savedIngredient.getId());
-		
-		return ingredientToIngredientCommand.convert(savedIngredient);
+		IngredientCommand savedCommand=ingredientToIngredientCommand.convert(savedIngredient);
+		savedCommand.setRecipeId(command.getRecipeId());
+		return savedCommand;
 	}
 
 	@Override

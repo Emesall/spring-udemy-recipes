@@ -28,8 +28,8 @@
 			<div class="col-md-6 offset-md-3">
 				<form th:object="${recipe}" th:action="@{/recipes/}"
 					th:method="post">
-					<input type="hidden" th:field="*{id}" />
-					<input type="hidden" th:field="*{image}" />
+					<input type="hidden" th:field="*{id}" /> <input type="hidden"
+						th:field="*{image}" />
 					<div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
 						<p>Please correct some errors</p>
 					</div>
@@ -43,8 +43,9 @@
 									<div class="col-md-3 form-group"
 										th:class="${#fields.hasErrors('description')}
                                 ? 'col-md-3 form-group text-danger' : 'col-md-3 form-group'">
-										<label th:utext="#{recipe.description}" style="font-weight: bold;">Description</label> <input type="text"
-											class="form-control" th:field="*{description}"
+										<label th:utext="#{recipe.description}"
+											style="font-weight: bold;">Description</label> <input
+											type="text" class="form-control" th:field="*{description}"
 											th:errorclass="is-invalid" /> <span class="help-block"
 											th:if="${#fields.hasErrors('description')}">
 											<ul>
@@ -168,6 +169,20 @@
 												th:text="${ingredient.uom!=null} ? ${(ingredient.amount+' '+ingredient.description+' '+ingredient.uom.description)}: ${(ingredient.amount+' '+ingredient.description)}">1
 												Cup of milk</li>
 										</ul>
+										<div th:each="ingredientEach, idx : ${recipe.ingredients}">
+											<input type="hidden"
+												th:field="*{ingredients[__${idx.index}__].id}" /> <input
+												type="hidden"
+												th:field="*{ingredients[__${idx.index}__].description}" />
+											<input type="hidden"
+												th:field="*{ingredients[__${idx.index}__].amount}" /> <input
+												type="hidden"
+												th:field="*{ingredients[__${idx.index}__].uom.id}" />
+										</div>
+										<div th:each="catEach, idx : ${recipe.categories}">
+											<input type="hidden"
+												th:field="*{categories[__${idx.index}__].id}" />
+										</div>
 									</div>
 								</div>
 							</div>

@@ -1,15 +1,0 @@
-spring:
-  sql:    init:      platform: mysql
-  datasource:
-    url: jdbc:mysql://localhost:3306/rec_dev
-    username: rec_dev_user
-    password: password  jpa:    hibernate:      ddl-auto: validate    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect    database: mysql    show-sql: true
- #   properties:
- #     javax:
-  #      persistence:
-  #        schema-generation:
-   #         create-source: metadata
-   #         scripts:
-    #          action: create
-    #          create-target: rec_database_create.sql
-      

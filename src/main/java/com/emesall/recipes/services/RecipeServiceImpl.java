@@ -54,14 +54,29 @@ public class RecipeServiceImpl implements RecipeService {
 		
 
 		Recipe savedRecipe = recipeRepository.save(detachedRecipe);
-		
+		RecipeCommand savedRecipeCommand = recipeToRecipeCommand.convert(savedRecipe);
+
+		// enhance command object with id value
+		if (savedRecipeCommand.getIngredients() != null && savedRecipeCommand.getIngredients().size() > 0) {
+			savedRecipeCommand.getIngredients().forEach(rc -> {
+				rc.setRecipeId(savedRecipeCommand.getId());
+			});
+		}
 		log.debug("Saved RecipeId:" + savedRecipe.getId());
-		return recipeToRecipeCommand.convert(savedRecipe);
+		return savedRecipeCommand;
 	}
 	
 	@Override
 	public RecipeCommand findCommandById(String id) {
-		return recipeToRecipeCommand.convert(findById(id));
+		RecipeCommand recipeCommand = recipeToRecipeCommand.convert(findById(id));
+
+		// enhance command object with id value
+		if (recipeCommand.getIngredients() != null && recipeCommand.getIngredients().size() > 0) {
+			recipeCommand.getIngredients().forEach(rc -> {
+				rc.setRecipeId(recipeCommand.getId());
+			});
+		}
+		return recipeCommand;
 	}
 
 	@Override
