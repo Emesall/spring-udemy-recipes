@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-
 public class Ingredient {
 
 	private String id=UUID.randomUUID().toString();

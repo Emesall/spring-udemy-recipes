@@ -5,8 +5,8 @@ import com.emesall.recipes.model.Ingredient;
 
 public interface IngredientService {
 
-	Ingredient findById(String id);
+	Ingredient findById(String recipeId,String id);
 	IngredientCommand findCommandById(String id,String recipeId);
 	IngredientCommand saveIngredientCommand(IngredientCommand command);
-	void deleteIngredientById(String id);
+	void deleteIngredientById(String recipeId,String id);
 }

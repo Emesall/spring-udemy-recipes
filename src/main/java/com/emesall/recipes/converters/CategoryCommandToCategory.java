@@ -22,7 +22,7 @@ public class CategoryCommandToCategory implements Converter<CategoryCommand, Cat
 			return null;
 		}
 		
-		final Category category=new Category();
+		Category category=new Category();
 		category.setId(source.getId());
 		category.setName(source.getName());
 		return category;

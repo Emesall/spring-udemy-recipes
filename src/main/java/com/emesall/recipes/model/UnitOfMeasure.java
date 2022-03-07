@@ -10,7 +10,7 @@ import lombok.Data;
 public class UnitOfMeasure {
 
 	@Id
-	private String Id;
+	private String id;
 	private String description;
 
 }

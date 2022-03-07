@@ -30,7 +30,7 @@ public class IngredientToIngredientCommand implements Converter<Ingredient, Ingr
 			return null;
 		}
 
-		final IngredientCommand ingredientCommand = new IngredientCommand();
+		IngredientCommand ingredientCommand = new IngredientCommand();
 		
 
 		ingredientCommand.setId(source.getId());

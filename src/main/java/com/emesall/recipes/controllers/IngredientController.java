@@ -42,10 +42,10 @@ public class IngredientController {
 	}
 
 	@RequestMapping("/recipes/{recipeId}/ingredients/{ingredientId}/show")
-	public String showById(Model model, @PathVariable String ingredientId) {
+	public String showById(Model model,@PathVariable String recipeId, @PathVariable String ingredientId) {
 		log.debug("Ingredient show page with ID: " + ingredientId);
 
-		model.addAttribute("ingredient", ingredientService.findById(ingredientId));
+		model.addAttribute("ingredient", ingredientService.findById(recipeId,ingredientId));
 		return "recipes/ingredients/show";
 	}
 
@@ -83,7 +83,7 @@ public class IngredientController {
 		IngredientCommand savedCommand=ingredientService.saveIngredientCommand(ingredientCommand);
 		
 		
-		return "redirect:/recipes/"+savedCommand.getRecipeId()+"/ingredients";
+		return "redirect:/recipes/"+ingredientCommand.getRecipeId()+"/ingredients";
 		
 	}
 	
@@ -91,7 +91,7 @@ public class IngredientController {
 	public String deleteIngredient(@PathVariable String recipeId, @PathVariable String ingredientId, Model model) {
 		log.debug("Ingredient deleting: " + ingredientId);
 
-		ingredientService.deleteIngredientById(ingredientId);
+		ingredientService.deleteIngredientById(recipeId,ingredientId);
 		
 		return "redirect:/recipes/"+recipeId+"/ingredients/";
 	}

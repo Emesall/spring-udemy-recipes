@@ -20,7 +20,7 @@ public class CategoryToCategoryCommand implements Converter<Category, CategoryCo
 			return null;
 		}
 
-		final CategoryCommand catCommand = new CategoryCommand();
+		CategoryCommand catCommand = new CategoryCommand();
 		catCommand.setId(source.getId());
 		catCommand.setName(source.getName());
 		return catCommand;
