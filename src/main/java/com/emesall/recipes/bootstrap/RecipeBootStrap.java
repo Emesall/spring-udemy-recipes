@@ -119,8 +119,8 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 		uom4.setDescription("pinch");
 		unitOfMeasureRepository.save(uom4);
 
-		
 	}
+
 	@Transactional
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -128,11 +128,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 		loadCategories();
 		loadUom();
 		recipeRepository.saveAll(getRecipes());
-		
-		
-		
-		
-		
+
 	}
 
 }
