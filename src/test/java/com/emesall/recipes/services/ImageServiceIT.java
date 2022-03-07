@@ -1,6 +1,7 @@
 package com.emesall.recipes.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.emesall.recipes.model.Recipe;
@@ -26,7 +26,6 @@ public class ImageServiceIT {
 	@Autowired
 	ImageService imageService;
 
-	@Transactional
 	@Test
 	public void testSaveandGetImage() throws Exception {
 		// given
@@ -42,13 +41,12 @@ public class ImageServiceIT {
 		// when
 
 		imageService.saveImageFile(id, multipartFile);
-		Recipe rec=recipeRepository.findById(id).orElseThrow(()->new RuntimeException("No recipe found"));
-		//byte[] result = imageService.getImage(id);
+		Recipe rec = recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("No recipe found"));
+		// byte[] result = imageService.getImage(id);
 
 		// then
 		assertEquals(recipe.getImage().length, rec.getImage().length);
 		assertArrayEquals(recipe.getImage(), rec.getImage());
-		
 
 	}
 }

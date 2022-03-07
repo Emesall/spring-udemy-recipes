@@ -60,7 +60,7 @@ class IngredientCommandToIngredientTest {
 		assertEquals(ID, ingredient.getId());
 		assertEquals(DESCRIPTION, ingredient.getDescription());
 		assertEquals(AMOUNT, ingredient.getAmount());
-		assertEquals(1L, ingredient.getUom().getId());
+		assertEquals("1", ingredient.getUom().getId());
 		assertEquals("de", ingredient.getUom().getDescription());
 
 	}

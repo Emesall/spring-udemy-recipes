@@ -91,12 +91,7 @@ class RecipeControllerTest {
 
 	}
 
-	@Test
-	void testNumberFormatException() throws Exception {
-
-		mockMvc.perform(get("/recipes/dsds/show")).andExpect(status().isBadRequest()).andExpect(view().name("error"));
-
-	}
+	
 
 	@Test
 	void testNewRecipe() throws Exception {

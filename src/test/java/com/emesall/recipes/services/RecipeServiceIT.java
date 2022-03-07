@@ -1,12 +1,12 @@
 package com.emesall.recipes.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.emesall.recipes.commands.RecipeCommand;
 import com.emesall.recipes.converters.RecipeCommandToRecipe;
@@ -32,7 +32,7 @@ public class RecipeServiceIT {
 	@Autowired
 	RecipeToRecipeCommand recipeToRecipeCommand;
 
-	@Transactional
+
 	@Test
 	public void testSaveOfDescription() throws Exception {
 		// given
