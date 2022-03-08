@@ -1,10 +1,10 @@
 package com.emesall.recipes.services;
 
-import java.util.Set;
-
 import com.emesall.recipes.commands.UnitOfMeasureCommand;
+
+import reactor.core.publisher.Flux;
 
 public interface UnitOfMeasureService {
 
-	Set<UnitOfMeasureCommand> listUoM();
+	Flux<UnitOfMeasureCommand> listUoM();
 }
