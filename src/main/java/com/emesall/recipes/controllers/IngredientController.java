@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.emesall.recipes.commands.IngredientCommand;
-import com.emesall.recipes.commands.RecipeCommand;
 import com.emesall.recipes.commands.UnitOfMeasureCommand;
 import com.emesall.recipes.services.IngredientService;
 import com.emesall.recipes.services.RecipeService;

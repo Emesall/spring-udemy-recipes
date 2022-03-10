@@ -1,8 +1,5 @@
 package com.emesall.recipes.services;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,20 +9,21 @@ import com.emesall.recipes.converters.RecipeCommandToRecipe;
 import com.emesall.recipes.converters.RecipeToRecipeCommand;
 import com.emesall.recipes.exceptions.NotFoundException;
 import com.emesall.recipes.model.Recipe;
-import com.emesall.recipes.repositories.RecipeRepository;
+import com.emesall.recipes.repositories.reactive.RecipeReactiveRepository;
 
-import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-@Slf4j
+
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
-	private final RecipeRepository recipeRepository;
+	private final RecipeReactiveRepository recipeRepository;
 	private final RecipeCommandToRecipe recipeCommandToRecipe;
 	private final RecipeToRecipeCommand recipeToRecipeCommand;
-	
+
 	@Autowired
-	public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe,
+	public RecipeServiceImpl(RecipeReactiveRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe,
 			RecipeToRecipeCommand recipeToRecipeCommand) {
 		super();
 		this.recipeRepository = recipeRepository;
@@ -34,58 +32,49 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public Set<Recipe> getRecipes() {
-
-		Set<Recipe> recipes = new HashSet<Recipe>();
-		recipeRepository.findAll().iterator().forEachRemaining(recipes::add);
-
-		return recipes;
+	public Flux<Recipe> getRecipes() {
+		return recipeRepository.findAll();
 	}
 
 	@Override
-	public Recipe findById(String id) {
-		return recipeRepository.findById(id).orElseThrow(() -> new NotFoundException("No recipe found for ID: "+id));
+	public Mono<Recipe> findById(String id) {
+		return recipeRepository.findById(id)
+				.switchIfEmpty(Mono.error(new NotFoundException("No recipe found")));
 	}
 
 	@Override
 	@Transactional
-	public RecipeCommand saveRecipeCommand(RecipeCommand command) {
-		Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
+	public Mono<RecipeCommand> saveRecipeCommand(RecipeCommand command) {
+
+		return recipeRepository.save(recipeCommandToRecipe.convert(command))
+			.map(recipe -> {
+				
+			RecipeCommand recipeCommand = recipeToRecipeCommand.convert(recipe);
+			recipeCommand.getIngredients().forEach(rc -> rc.setRecipeId(recipeCommand.getId()));
+			
+			return recipeCommand;
+		});
+	}
+
+	@Override
+	public Mono<RecipeCommand> findCommandById(String id) {
+
+		return findById(id).map(recipe -> {
+			RecipeCommand recipeCommand = recipeToRecipeCommand.convert(recipe);
+
+			recipeCommand.getIngredients().forEach(rc -> rc.setRecipeId(recipeCommand.getId()));
+
+			return recipeCommand;
+		});
+
+	}
+
+	@Override
+	public Mono<Void> deleteRecipeById(String id) {
+		
+		return recipeRepository.deleteById(id).then();
 		
 
-		Recipe savedRecipe = recipeRepository.save(detachedRecipe);
-		RecipeCommand savedRecipeCommand = recipeToRecipeCommand.convert(savedRecipe);
-
-		// enhance command object with id value
-		if (savedRecipeCommand.getIngredients() != null && savedRecipeCommand.getIngredients().size() > 0) {
-			savedRecipeCommand.getIngredients().forEach(rc -> {
-				rc.setRecipeId(savedRecipeCommand.getId());
-			});
-		}
-		log.debug("Saved RecipeId:" + savedRecipe.getId());
-		return savedRecipeCommand;
 	}
-	
-	@Override
-	public RecipeCommand findCommandById(String id) {
-		RecipeCommand recipeCommand = recipeToRecipeCommand.convert(findById(id));
-
-		// enhance command object with id value
-		if (recipeCommand.getIngredients() != null && recipeCommand.getIngredients().size() > 0) {
-			recipeCommand.getIngredients().forEach(rc -> {
-				rc.setRecipeId(recipeCommand.getId());
-			});
-		}
-		return recipeCommand;
-	}
-
-	@Override
-	public void deleteRecipeById(String id) {
-	
-		recipeRepository.deleteById(id);
-
-	}
-	
-	
 
 }

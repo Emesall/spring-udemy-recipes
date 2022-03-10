@@ -29,7 +29,7 @@ class UnitOfMeasureReactiveRepositoryIT {
 		uom.setDescription("test");
 		unitOfMeasureRepository.save(uom).block();
 		
-		assertEquals(1L, unitOfMeasureRepository.count().subscribe());
+		assertEquals(1L, unitOfMeasureRepository.count().block());
 		
 	}
 

@@ -1,8 +1,10 @@
 package com.emesall.recipes.controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +32,9 @@ import com.emesall.recipes.commands.RecipeCommand;
 import com.emesall.recipes.exceptions.NotFoundException;
 import com.emesall.recipes.model.Recipe;
 import com.emesall.recipes.services.RecipeServiceImpl;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeControllerTest {
@@ -51,7 +57,7 @@ class RecipeControllerTest {
 
 	@Test
 	void MockMvcTest() throws Exception {
-
+		when(recipeService.getRecipes()).thenReturn(Flux.empty());
 		mockMvc.perform(get("/recipes")).andExpect(status().isOk()).andExpect(view().name("recipes/list"));
 	}
 
@@ -60,15 +66,15 @@ class RecipeControllerTest {
 
 		Set<Recipe> recipes = new HashSet<Recipe>();
 		recipes.add(new Recipe());
-		when(recipeService.getRecipes()).thenReturn(recipes);
+		when(recipeService.getRecipes()).thenReturn(Flux.fromIterable(recipes));
 
-		ArgumentCaptor<Set<Recipe>> captor = ArgumentCaptor.forClass(Set.class);
+		ArgumentCaptor<List<Recipe>> captor = ArgumentCaptor.forClass(List.class);
 
 		assertEquals("recipes/list", recipeController.getRecipeList(model));
 		verify(recipeService, times(1)).getRecipes();
 		verify(model, times(1)).addAttribute(eq("recipes"), captor.capture());
 
-		Set<Recipe> actual = captor.getValue();
+		List<Recipe> actual = captor.getValue();
 		assertEquals(recipes.size(), actual.size());
 	}
 
@@ -76,7 +82,7 @@ class RecipeControllerTest {
 	void testShowById() throws Exception {
 		Recipe recipe = new Recipe();
 		recipe.setId("2");
-		when(recipeService.findById(anyString())).thenReturn(recipe);
+		when(recipeService.findById(anyString())).thenReturn(Mono.just(recipe));
 
 		mockMvc.perform(get("/recipes/1/show")).andExpect(status().isOk()).andExpect(view().name("recipes/show"));
 
@@ -107,7 +113,7 @@ class RecipeControllerTest {
 		RecipeCommand command = new RecipeCommand();
 		command.setId("2");
 
-		when(recipeService.saveRecipeCommand(any())).thenReturn(command);
+		when(recipeService.saveRecipeCommand(any())).thenReturn(Mono.just(command));
 
 		mockMvc.perform(post("/recipes").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("id", "")
 				.param("description", "some string").param("directions", "some directions"))
@@ -130,7 +136,7 @@ class RecipeControllerTest {
 	void testUpdate() throws Exception {
 		RecipeCommand recipe = new RecipeCommand();
 		recipe.setId("1");
-		when(recipeService.findCommandById(anyString())).thenReturn(recipe);
+		when(recipeService.findCommandById(anyString())).thenReturn(Mono.just(recipe));
 
 		mockMvc.perform(get("/recipes/1/update")).andExpect(status().isOk())
 				.andExpect(view().name("recipes/recipeForm")).andExpect(model().attributeExists("recipe"));
@@ -140,6 +146,11 @@ class RecipeControllerTest {
 
 	@Test
 	void testDelete() throws Exception {
+		
+		//when
+		when(recipeService.deleteRecipeById("1")).thenReturn(Mono.empty());
+		
+		//then
 		mockMvc.perform(get("/recipes/1/delete")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/recipes"));
 

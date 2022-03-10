@@ -59,7 +59,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 		recipe1.setCookTime(10);
 		recipe1.setDifficulty(Difficulty.MEDIUM);
 		recipe1.setPrepTime(10);
-		recipe1.setUrl("/guacamole");
+		recipe1.setUrl("https://");
 		recipe1.setServings(4);
 		recipe1.addIngredient(avocado);
 		recipe1.addIngredient(salt);
@@ -69,6 +69,7 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 		recipe1.addIngredient(cilantro);
 		recipe1.addIngredient(pepper);
 		recipe1.addIngredient(tomato);
+		recipe1.setDescription("dsds");
 
 		Recipe recipe2 = new Recipe("Recipe2");
 		recipe2.setCookTime(20);

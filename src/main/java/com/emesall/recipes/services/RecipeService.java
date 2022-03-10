@@ -1,15 +1,16 @@
 package com.emesall.recipes.services;
 
-import java.util.Set;
-
 import com.emesall.recipes.commands.RecipeCommand;
 import com.emesall.recipes.model.Recipe;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 public interface RecipeService
 {
-	Set<Recipe> getRecipes();
-	Recipe findById(String id);
-	RecipeCommand saveRecipeCommand(RecipeCommand command);
-	RecipeCommand findCommandById(String id);
-	void deleteRecipeById(String id);
+	Flux<Recipe> getRecipes();
+	Mono<Recipe> findById(String id);
+	Mono<RecipeCommand> saveRecipeCommand(RecipeCommand command);
+	Mono<RecipeCommand> findCommandById(String id);
+	Mono<Void> deleteRecipeById(String id);
 }
