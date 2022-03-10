@@ -11,22 +11,25 @@ import com.emesall.recipes.converters.IngredientCommandToIngredient;
 import com.emesall.recipes.converters.IngredientToIngredientCommand;
 import com.emesall.recipes.model.Ingredient;
 import com.emesall.recipes.model.Recipe;
-import com.emesall.recipes.repositories.RecipeRepository;
-import com.emesall.recipes.repositories.UnitOfMeasureRepository;
+import com.emesall.recipes.repositories.reactive.RecipeReactiveRepository;
+import com.emesall.recipes.repositories.reactive.UnitOfMeasureReactiveRepository;
+import com.mongodb.connection.Stream;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
 
-	private final RecipeRepository recipeRepository;
+	private final RecipeReactiveRepository recipeRepository;
 	private final IngredientToIngredientCommand ingredientToIngredientCommand;
 	private final IngredientCommandToIngredient ingredientCommandToIngredient;
-	private final UnitOfMeasureRepository unitOfMeasureRepository;
+	private final UnitOfMeasureReactiveRepository unitOfMeasureRepository;
 
 	@Autowired
-	public IngredientServiceImpl(RecipeRepository recipeRepository,
+	public IngredientServiceImpl(RecipeReactiveRepository recipeRepository,
 			IngredientToIngredientCommand ingredientToIngredientCommand,
 			IngredientCommandToIngredient ingredientCommandToIngredient,
-			UnitOfMeasureRepository unitOfMeasureRepository) {
+			UnitOfMeasureReactiveRepository unitOfMeasureRepository) {
 		super();
 		this.recipeRepository = recipeRepository;
 		this.ingredientToIngredientCommand = ingredientToIngredientCommand;
@@ -35,27 +38,35 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 
 	@Override
-	public Ingredient findById(String recipeId, String id) {
+	public Mono<Ingredient> findById(String recipeId, String id) {
 
-		Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RuntimeException("No recipe found"));
-		Ingredient ingredient = recipe.getIngredients().stream().filter(ing -> ing.getId().equals(id)).findFirst()
-				.orElseThrow(() -> new RuntimeException("No ingredient found"));
+		Mono<Ingredient> ingredient = recipeRepository.findById(recipeId).flatMapIterable(rec -> rec.getIngredients())
+				.filter(ing -> ing.getId().equals(id)).single();
+
 		return ingredient;
+
 	}
 
 	@Override
-	public IngredientCommand findCommandById(String id, String recipeId) {
-		IngredientCommand command = ingredientToIngredientCommand.convert(findById(recipeId, id));
-		command.setRecipeId(recipeId);
-		return command;
+	public Mono<IngredientCommand> findCommandById(String id, String recipeId) {
+
+		return findById(recipeId, id).map(ing -> {
+			IngredientCommand ingCommand = ingredientToIngredientCommand.convert(ing);
+			ingCommand.setRecipeId(recipeId);
+			return ingCommand;
+		});
+
 	}
 
 	@Override
-	public IngredientCommand saveIngredientCommand(IngredientCommand command) {
+	public Mono<IngredientCommand> saveIngredientCommand(IngredientCommand command) {
 
 		// find recipe
-		Recipe recipe = recipeRepository.findById(command.getRecipeId())
-				.orElseThrow(() -> new RuntimeException("No recipe found"));
+		Recipe recipe = recipeRepository
+				.findById(command.getRecipeId())
+				.switchIfEmpty(Mono.error(new RuntimeException("Recipe not found: " + command.getRecipeId())))
+				.block();
+
 		// find ingredient in recipe
 		Optional<Ingredient> ingredientOptional = recipe.getIngredients().stream()
 				.filter(ingredient -> ingredient.getId().equals(command.getId())).findFirst();
@@ -64,8 +75,8 @@ public class IngredientServiceImpl implements IngredientService {
 			Ingredient ingredientFound = ingredientOptional.get();
 			ingredientFound.setDescription(command.getDescription());
 			ingredientFound.setAmount(command.getAmount());
-			ingredientFound.setUom(unitOfMeasureRepository.findById(command.getUom().getId())
-					.orElseThrow(() -> new RuntimeException("UOM NOT FOUND")));
+			ingredientFound.setUom(unitOfMeasureRepository.findById(command.getUom().getId()).switchIfEmpty(Mono.error(new RuntimeException("UOM NOT FOUND"))).block());
+					
 		}
 		// no ingredient in recipe
 		else {
@@ -75,21 +86,21 @@ public class IngredientServiceImpl implements IngredientService {
 			recipe.addIngredient(ingredient);
 		}
 
-		Recipe savedRecipe = recipeRepository.save(recipe);
+		Recipe savedRecipe = recipeRepository.save(recipe).block();
 
 		Optional<Ingredient> savedIngredientOptional = savedRecipe.getIngredients().stream()
 				.filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId())).findFirst();
 
-		return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
+		return Mono.just(ingredientToIngredientCommand.convert(savedIngredientOptional.get()));
 	}
 
 	@Override
-	public void deleteIngredientById(String recipeId, String id) {
-		Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RuntimeException("No recipe found"));
-		Ingredient ingredient = recipe.getIngredients().stream().filter(ing -> ing.getId().equals(id)).findFirst()
-				.orElseThrow(() -> new RuntimeException("No ingredient found"));
-		recipe.getIngredients().remove(ingredient);
-		recipeRepository.save(recipe);
+	public Mono<Void> deleteIngredientById(String recipeId, String id) {
+
+		return recipeRepository.findById(recipeId).map(recipe -> {
+			recipe.getIngredients().removeIf(ingredient -> ingredient.getId().equals(id));
+			return recipe;
+		}).flatMap(recipeRepository::save).then();
 
 	}
 

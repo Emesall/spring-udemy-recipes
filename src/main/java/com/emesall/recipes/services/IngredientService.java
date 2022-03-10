@@ -3,10 +3,12 @@ package com.emesall.recipes.services;
 import com.emesall.recipes.commands.IngredientCommand;
 import com.emesall.recipes.model.Ingredient;
 
+import reactor.core.publisher.Mono;
+
 public interface IngredientService {
 
-	Ingredient findById(String recipeId,String id);
-	IngredientCommand findCommandById(String id,String recipeId);
-	IngredientCommand saveIngredientCommand(IngredientCommand command);
-	void deleteIngredientById(String recipeId,String id);
+	Mono<Ingredient> findById(String recipeId,String id);
+	Mono<IngredientCommand> findCommandById(String id,String recipeId);
+	Mono<IngredientCommand> saveIngredientCommand(IngredientCommand command);
+	Mono<Void> deleteIngredientById(String recipeId,String id);
 }
