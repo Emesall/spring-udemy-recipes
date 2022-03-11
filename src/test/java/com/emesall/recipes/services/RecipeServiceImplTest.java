@@ -2,8 +2,6 @@ package com.emesall.recipes.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -20,7 +18,6 @@ import org.mockito.MockitoAnnotations;
 
 import com.emesall.recipes.converters.RecipeCommandToRecipe;
 import com.emesall.recipes.converters.RecipeToRecipeCommand;
-import com.emesall.recipes.exceptions.NotFoundException;
 import com.emesall.recipes.model.Recipe;
 import com.emesall.recipes.repositories.reactive.RecipeReactiveRepository;
 

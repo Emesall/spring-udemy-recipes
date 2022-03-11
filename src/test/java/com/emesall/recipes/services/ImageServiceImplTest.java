@@ -2,13 +2,13 @@ package com.emesall.recipes.services;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,15 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.emesall.recipes.model.Recipe;
-import com.emesall.recipes.repositories.RecipeRepository;
+import com.emesall.recipes.repositories.reactive.RecipeReactiveRepository;
+
+import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 class ImageServiceImplTest {
 
 	@Mock
-	RecipeRepository recipeRepository;
+	RecipeReactiveRepository recipeRepository;
 
 	ImageService imageService;
 
@@ -44,9 +46,10 @@ class ImageServiceImplTest {
 
 		Recipe recipe = new Recipe();
 		recipe.setId(id);
-		Optional<Recipe> recipeOptional = Optional.of(recipe);
+		
 
-		when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
+		when(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe));
+		when(recipeRepository.save(any(Recipe.class))).thenReturn(Mono.empty());
 
 		ArgumentCaptor<Recipe> argumentCaptor = ArgumentCaptor.forClass(Recipe.class);
 
@@ -71,11 +74,11 @@ class ImageServiceImplTest {
 		recipe.setId(id);
 		recipe.setImage(multipartFile.getBytes());
 		
-		Optional<Recipe> optionalRecipe = Optional.of(recipe);
+
 
 		// when
-		when(recipeRepository.findById(anyString())).thenReturn(optionalRecipe);
-		byte[] result=imageService.getImage(id);
+		when(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe));
+		byte[] result=imageService.getImage(id).block();
 
 		// then
 		assertEquals(recipe.getImage(), result);

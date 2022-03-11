@@ -44,14 +44,14 @@ public class RecipeImageController {
 	@PostMapping("recipes/{recipeId}/image")
 	public String handleImageUpload(@PathVariable String recipeId, @RequestParam("imagefile") MultipartFile file) {
 		log.debug("Request from view to controller to save image..");
-		imageService.saveImageFile(recipeId, file);
+		imageService.saveImageFile(recipeId, file).block();
 
 		return "redirect:/recipes/{recipeId}/show";
 	}
 
 	@GetMapping("recipes/{recipeId}/fetchImage")
 	public void fetchImage(@PathVariable String recipeId, HttpServletResponse httpResponse) throws IOException {
-		byte[] image = imageService.getImage(recipeId);
+		byte[] image = imageService.getImage(recipeId).block();
 		if (image != null) {
 			log.debug("Loading image from database");
 			httpResponse.setContentType("image/jpeg");

@@ -38,7 +38,7 @@ public class ExceptionHandlingController {
 	private ModelAndView genericExceptionMethod(Exception exception, String response) {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("response", response);
-		mav.addObject("message", "Provided input is not a number");
+		mav.addObject("message", "Wrong recipe ID");
 		mav.setViewName("error");
 		return mav;
 	}

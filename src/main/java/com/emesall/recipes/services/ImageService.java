@@ -2,7 +2,9 @@ package com.emesall.recipes.services;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import reactor.core.publisher.Mono;
+
 public interface ImageService {
-	void saveImageFile(String recipeId, MultipartFile file);
-	byte[] getImage(String recipeId);
+	Mono<Void> saveImageFile(String recipeId, MultipartFile file);
+	Mono<byte[]> getImage(String recipeId);
 }
