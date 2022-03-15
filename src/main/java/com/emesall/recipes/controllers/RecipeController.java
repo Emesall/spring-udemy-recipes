@@ -1,29 +1,32 @@
 package com.emesall.recipes.controllers;
 
+
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 import com.emesall.recipes.commands.RecipeCommand;
-import com.emesall.recipes.services.RecipeServiceImpl;
+import com.emesall.recipes.services.RecipeService;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Controller
 public class RecipeController {
 
-	private final RecipeServiceImpl recipeService;
+	private final RecipeService recipeService;
 
 	@Autowired
-	public RecipeController(RecipeServiceImpl recipeListService) {
+	public RecipeController(RecipeService recipeListService) {
 		super();
 		this.recipeService = recipeListService;
 	}
@@ -31,7 +34,7 @@ public class RecipeController {
 	@RequestMapping("/recipes")
 	public String getRecipeList(Model model) {
 		log.debug("Loading recipes page");
-		model.addAttribute("recipes", recipeService.getRecipes().collectList().block());
+		model.addAttribute("recipes", recipeService.getRecipes());
 
 		return "recipes/list";
 	}
@@ -39,7 +42,7 @@ public class RecipeController {
 	@RequestMapping("/recipes/{id}/show")
 	public String showById(@PathVariable String id, Model model) {
 		log.debug("Loading recipe page with ID: " + id);
-		model.addAttribute("recipe", recipeService.findById(id).block());
+		model.addAttribute("recipe", recipeService.findById(id));
 
 		return "recipes/show";
 	}
@@ -54,29 +57,29 @@ public class RecipeController {
 	@RequestMapping("/recipes/{id}/update")
 	public String getUpdateRecipe(@PathVariable String id, Model model) {
 		log.debug("Opening page update Recipe");
-		model.addAttribute("recipe", recipeService.findCommandById(id).block());
+		model.addAttribute("recipe", recipeService.findCommandById(id));
 		return "recipes/recipeForm";
 	}
 
 	@PostMapping("recipes")
-	public String saveOrUpdate(@Valid @ModelAttribute("recipe") RecipeCommand recipeCommand, BindingResult bindingResult) {
+	public Mono<String> saveOrUpdate(@Valid @ModelAttribute("recipe") Mono<RecipeCommand> recipeCommand) {
 		
-		if(bindingResult.hasErrors()) {
-			bindingResult.getAllErrors().forEach(result->log.debug(result.toString()));
-			
-			 return "recipes/recipeform";
-		}
-		log.debug("Saving new recipe into the database..");
-		RecipeCommand savedCommand = recipeService.saveRecipeCommand(recipeCommand).block();
-
-		return "redirect:/recipes/" + savedCommand.getId() + "/show";
+		return recipeCommand
+				.flatMap(recipeService::saveRecipeCommand)
+				.map(rec->"redirect:/recipes/" + rec.getId() + "/show")
+				.doOnError(thr -> log.error("Error saving recipe"))
+		        .onErrorResume(WebExchangeBindException.class, thr -> Mono.just("recipes/recipeform"));		
+	
 	}
 
 	@RequestMapping("/recipes/{id}/delete")
-	public String deleteRecipe(@PathVariable String id, Model model) {
+	public Mono<String> deleteRecipe(@PathVariable String id, Model model) {
 		log.debug("Deleting recipe with ID: " + id);
-		recipeService.deleteRecipeById(id).block();
-		return "redirect:/recipes";
+		return recipeService.deleteRecipeById(id)
+				.thenReturn("redirect:/recipes");
+				
+		
+		
 	}
 	
 

@@ -1,5 +1,7 @@
 package com.emesall.recipes.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 import com.emesall.recipes.commands.IngredientCommand;
 import com.emesall.recipes.commands.UnitOfMeasureCommand;
@@ -15,6 +18,7 @@ import com.emesall.recipes.services.RecipeService;
 import com.emesall.recipes.services.UnitOfMeasureService;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Controller
@@ -44,7 +48,7 @@ public class IngredientController {
 	public String showById(Model model,@PathVariable String recipeId, @PathVariable String ingredientId) {
 		log.debug("Ingredient show page with ID: " + ingredientId);
 
-		model.addAttribute("ingredient", ingredientService.findById(recipeId,ingredientId).block());
+		model.addAttribute("ingredient", ingredientService.findById(recipeId,ingredientId));
 		return "recipes/ingredients/show";
 	}
 
@@ -52,8 +56,8 @@ public class IngredientController {
 	public String getUpdateIngredient(@PathVariable String recipeId,@PathVariable String ingredientId, Model model) {
 		log.debug("Ingredient update page with ID: " + ingredientId);
 
-		model.addAttribute("ingredient", ingredientService.findCommandById(ingredientId,recipeId).block());
-		model.addAttribute("uomList",unitOfMeasureService.listUoM().collectList().block());
+		model.addAttribute("ingredient", ingredientService.findCommandById(ingredientId,recipeId));
+		model.addAttribute("uomList",unitOfMeasureService.listUoM());
 		return "recipes/ingredients/ingredientForm";
 	}
 	
@@ -69,28 +73,29 @@ public class IngredientController {
 
         //init uom
         ingredientCommand.setUom(new UnitOfMeasureCommand());
-		model.addAttribute("uomList",unitOfMeasureService.listUoM().collectList().block());
+		model.addAttribute("uomList",unitOfMeasureService.listUoM());
 		return "recipes/ingredients/ingredientForm";
 	}
 	
 	
 	@PostMapping("/recipes/{recipeId}/ingredients")
-	public String saveIngredient(@ModelAttribute IngredientCommand ingredientCommand ) {
+	public Mono<String> saveIngredient(@Valid @ModelAttribute("ingredient") Mono<IngredientCommand> ingredientCommand,@PathVariable String recipeId ) {
 		log.debug("Saving/updating ingredient ..");
-		IngredientCommand savedCommand=ingredientService.saveIngredientCommand(ingredientCommand).block();
-		
-		
-		return "redirect:/recipes/"+ingredientCommand.getRecipeId()+"/ingredients";
+		return ingredientCommand
+				.flatMap(ingredientService::saveIngredientCommand)
+				.map(ingr->"redirect:/recipes/"+recipeId+"/ingredients")
+				.doOnError(thr -> log.error("Error saving ingredient"))
+				.onErrorResume(WebExchangeBindException.class,thr->Mono.just("recipes/ingredients/ingredientForm"));
 		
 	}
 	
 	@RequestMapping("/recipes/{recipeId}/ingredients/{ingredientId}/delete")
-	public String deleteIngredient(@PathVariable String recipeId, @PathVariable String ingredientId, Model model) {
+	public Mono<String> deleteIngredient(@PathVariable String recipeId, @PathVariable String ingredientId, Model model) {
 		log.debug("Ingredient deleting: " + ingredientId);
 
-		ingredientService.deleteIngredientById(recipeId,ingredientId).block();
-		
-		return "redirect:/recipes/"+recipeId+"/ingredients/";
+		return ingredientService.deleteIngredientById(recipeId,ingredientId)
+				.thenReturn("redirect:/recipes/"+recipeId+"/ingredients/");
+	
 	}
 	
 	

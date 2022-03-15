@@ -1,12 +1,5 @@
 package com.emesall.recipes.controllers;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +41,7 @@ public class RecipeImageController {
 
 		return "redirect:/recipes/{recipeId}/show";
 	}
-
+/*
 	@GetMapping("recipes/{recipeId}/fetchImage")
 	public void fetchImage(@PathVariable String recipeId, HttpServletResponse httpResponse) throws IOException {
 		byte[] image = imageService.getImage(recipeId).block();
@@ -65,5 +58,5 @@ public class RecipeImageController {
 		}
 
 	}
-
+*/
 }
