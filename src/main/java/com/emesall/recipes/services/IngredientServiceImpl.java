@@ -1,7 +1,6 @@
 package com.emesall.recipes.services;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.emesall.recipes.commands.IngredientCommand;
 import com.emesall.recipes.converters.IngredientCommandToIngredient;
 import com.emesall.recipes.converters.IngredientToIngredientCommand;
+import com.emesall.recipes.exceptions.NotFoundException;
 import com.emesall.recipes.model.Ingredient;
 import com.emesall.recipes.model.Recipe;
 import com.emesall.recipes.repositories.reactive.RecipeReactiveRepository;
@@ -41,9 +41,10 @@ public class IngredientServiceImpl implements IngredientService {
 
 		Mono<Ingredient> ingredient = recipeRepository.findById(recipeId)
 				.flatMapIterable(rec -> rec.getIngredients())
-				.filter(ing -> ing.getId()
-				.equals(id))
+				.filter(ing -> ing.getId().equals(id))
+				.switchIfEmpty(Mono.error(new NotFoundException("Ingredient not found: ")))
 				.single();
+				
 
 		return ingredient;
 
