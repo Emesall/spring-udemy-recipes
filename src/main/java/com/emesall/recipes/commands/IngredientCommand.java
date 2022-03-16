@@ -20,5 +20,6 @@ public class IngredientCommand {
 	@NotNull
 	@Min(1)
 	private BigDecimal amount;
+	@NotNull
 	private UnitOfMeasureCommand uom;
 }

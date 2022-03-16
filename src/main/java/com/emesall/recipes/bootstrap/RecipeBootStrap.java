@@ -42,18 +42,21 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 
 		List<Recipe> recipes = new ArrayList<Recipe>();
 		Ingredient avocado = new Ingredient("Avocado", new BigDecimal(2));
-		Ingredient salt = new Ingredient("Salt", new BigDecimal(0.25));
+		avocado.setUom(getUnitOfMeasure("None"));
+		Ingredient salt = new Ingredient("Salt", new BigDecimal(3));
 		salt.setUom(getUnitOfMeasure("teaspoon"));
 		Ingredient lime = new Ingredient("Lime", new BigDecimal(1));
 		lime.setUom(getUnitOfMeasure("tablespoon"));
 		Ingredient onion = new Ingredient("Onion", new BigDecimal(2));
 		onion.setUom(getUnitOfMeasure("tablespoon"));
 		Ingredient chili = new Ingredient("Chili", new BigDecimal(1));
+		chili.setUom(getUnitOfMeasure("None"));
 		Ingredient cilantro = new Ingredient("Cilantro", new BigDecimal(2));
 		cilantro.setUom(getUnitOfMeasure("tablespoon"));
 		Ingredient pepper = new Ingredient("Pepper", new BigDecimal(1));
 		pepper.setUom(getUnitOfMeasure("pinch"));
-		Ingredient tomato = new Ingredient("Tomato", new BigDecimal(0.5));
+		Ingredient tomato = new Ingredient("Tomato", new BigDecimal(1));
+		tomato.setUom(getUnitOfMeasure("None"));
 
 		Recipe recipe1 = new Recipe("Guacamole");
 		recipe1.setCookTime(10);
@@ -116,6 +119,10 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
 		uom2.setDescription("tablespoon");
 		unitOfMeasureRepository.save(uom2);
 
+		UnitOfMeasure uom3 = new UnitOfMeasure();
+		uom3.setDescription("None");
+		unitOfMeasureRepository.save(uom3);
+		
 		UnitOfMeasure uom4 = new UnitOfMeasure();
 		uom4.setDescription("pinch");
 		unitOfMeasureRepository.save(uom4);

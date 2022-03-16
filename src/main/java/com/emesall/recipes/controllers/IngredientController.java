@@ -18,6 +18,7 @@ import com.emesall.recipes.services.RecipeService;
 import com.emesall.recipes.services.UnitOfMeasureService;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -57,7 +58,6 @@ public class IngredientController {
 		log.debug("Ingredient update page with ID: " + ingredientId);
 
 		model.addAttribute("ingredient", ingredientService.findCommandById(ingredientId,recipeId));
-		model.addAttribute("uomList",unitOfMeasureService.listUoM());
 		return "recipes/ingredients/ingredientForm";
 	}
 	
@@ -65,26 +65,24 @@ public class IngredientController {
 	public String getNewIngredient(@PathVariable String recipeId, Model model) {
 		log.debug("Adding new ingredient to recipe: " + recipeId);
 
-
         //need to return back parent id for hidden form property
         IngredientCommand ingredientCommand = new IngredientCommand();
         ingredientCommand.setRecipeId(recipeId);
-        model.addAttribute("ingredient", ingredientCommand);
-
-        //init uom
         ingredientCommand.setUom(new UnitOfMeasureCommand());
-		model.addAttribute("uomList",unitOfMeasureService.listUoM());
+        model.addAttribute("ingredient", ingredientCommand);
+        
+        
 		return "recipes/ingredients/ingredientForm";
 	}
 	
 	
 	@PostMapping("/recipes/{recipeId}/ingredients")
-	public Mono<String> saveIngredient(@Valid @ModelAttribute("ingredient") Mono<IngredientCommand> ingredientCommand,@PathVariable String recipeId ) {
-		log.debug("Saving/updating ingredient ..");
+	public Mono<String> saveIngredient(@PathVariable String recipeId,@Valid @ModelAttribute("ingredient") Mono<IngredientCommand> ingredientCommand) {
+		log.debug("Saving ingredient ..");
 		return ingredientCommand
 				.flatMap(ingredientService::saveIngredientCommand)
 				.map(ingr->"redirect:/recipes/"+recipeId+"/ingredients")
-				.doOnError(thr -> log.error("Error saving ingredient"))
+				.doOnError(thr -> log.error("Error saving ingredient "))
 				.onErrorResume(WebExchangeBindException.class,thr->Mono.just("recipes/ingredients/ingredientForm"));
 		
 	}
@@ -96,6 +94,10 @@ public class IngredientController {
 		return ingredientService.deleteIngredientById(recipeId,ingredientId)
 				.thenReturn("redirect:/recipes/"+recipeId+"/ingredients/");
 	
+	}
+	@ModelAttribute("uomList")
+	public Flux<UnitOfMeasureCommand> populateUomList(){
+		return unitOfMeasureService.listUoM();
 	}
 	
 	

@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 
 import com.emesall.recipes.commands.UnitOfMeasureCommand;
 import com.emesall.recipes.converters.UnitOfMeasureToUnitOfMeasureCommand;
+import com.emesall.recipes.model.UnitOfMeasure;
 import com.emesall.recipes.repositories.reactive.UnitOfMeasureReactiveRepository;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class UnifOfMeasureServiceImpl implements UnitOfMeasureService {
@@ -25,8 +27,13 @@ public class UnifOfMeasureServiceImpl implements UnitOfMeasureService {
 
 	public Flux<UnitOfMeasureCommand> listUoM() {
 
-		
 		return unitOfMeasureRepository.findAll().map(converter::convert);
 
 	}
+	
+	public Mono<UnitOfMeasure> findById(String id){
+		return unitOfMeasureRepository.findById(id)
+				.switchIfEmpty(Mono.error(new RuntimeException("UOM NOT FOUND")));
+	}
+	
 }

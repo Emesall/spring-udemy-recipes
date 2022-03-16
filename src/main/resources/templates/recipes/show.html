@@ -121,7 +121,7 @@
 								<div class="col-md-12">
 									<ul>
 										<li th:each="ingredient : ${recipe.ingredients}"
-											th:text="${ingredient.uom!=null} ? ${(ingredient.amount+' '+ingredient.description+' '+ingredient.uom.description)}: ${(ingredient.amount+' '+ingredient.description)}">1
+											th:text="${ingredient.uom.description!='None'} ? ${(ingredient.amount+' '+ingredient.description+' '+ingredient.uom.description)}: ${(ingredient.amount+' '+ingredient.description)}">1
 											Cup of milk</li>
 									</ul>
 								</div>

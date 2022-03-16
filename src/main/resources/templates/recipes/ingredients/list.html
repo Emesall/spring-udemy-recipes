@@ -70,7 +70,7 @@
 									<tr th:each="ingredient : ${recipe.ingredients}">
 										<td th:text="${ingredient.id}">334</td>
 										<td
-											th:text="${ingredient.uom!=null} ? ${(ingredient.amount+' '+ingredient.description+' '+ingredient.uom.description)}: ${(ingredient.amount+' '+ingredient.description)}">Tasty
+											th:text="${ingredient.uom.description!='None'} ? ${(ingredient.amount+' '+ingredient.description+' '+ingredient.uom.description)}: ${(ingredient.amount+' '+ingredient.description)}">Tasty
 											Goodnees 3</td>
 										<td><a href="#"
 											th:href="@{'/recipes/' + ${recipe.id} + '/ingredients/' + ${ingredient.id} + '/show'}">View</a></td>
