@@ -30,13 +30,16 @@ public class ExceptionHandlingController {
 		model.addAttribute("response", response);
 		return "error";
 	}
-/*
+
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(NumberFormatException.class)
-	public ModelAndView handleBadRequest(Exception exception) {
-		String BAD_REQUEST = "400 BAD REQUEST";
-		return genericExceptionMethod(exception, BAD_REQUEST);
+	public String handleBadRequest(Exception exception,Model model) {
+		String message = "400 Wrong Format ";
+		String response = exception.getMessage();
+		model.addAttribute("message", message);
+		model.addAttribute("response", response);
+		return "error";
 	}
-*/
+	
 
 }

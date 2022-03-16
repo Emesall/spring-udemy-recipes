@@ -68,7 +68,8 @@ public class RecipeController {
 				.flatMap(recipeService::saveRecipeCommand)
 				.map(rec->"redirect:/recipes/" + rec.getId() + "/show")
 				.doOnError(thr -> log.error("Error saving recipe"))
-		        .onErrorResume(WebExchangeBindException.class, thr -> Mono.just("recipes/recipeform"));		
+		        .onErrorResume(WebExchangeBindException.class, thr -> Mono.just("recipes/recipeform"));
+		
 	
 	}
 
